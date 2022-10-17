@@ -2,7 +2,7 @@ const imageContainer = document.getElementById("image__container")
 const loader = document.getElementById("loader")
 
 let isReady = false
-let imagesLoaded = 0
+let imagesLoadedAmount = 0
 let totalImgs = 0
 let photosArray = []
 
@@ -13,10 +13,10 @@ const apiUrl = `https://api.unsplash.com/photos/random/?client_id=${apiKey}&coun
 
 // check amount of vehicle loaded
 const imageLoaded = () => {
-    imagesLoaded++
-    if(imagesLoaded === totalImgs) {
+    imagesLoadedAmount++
+    if(imagesLoadedAmount === totalImgs) {
         isReady = true
-        loader.hidden = false
+        loader.hidden = true
     }
 }
 
@@ -29,11 +29,14 @@ function setAttributes(element, attributes) {
 
 // Create elements for Links and Photos. Add to DOM
 function displayPhotos() {
-    imageLoaded = 0
+    console.log('Hello')
+    
+    imagesLoadedAmount = 0
     totalImgs = photosArray.length
     console.log(totalImgs)
 
     photosArray.forEach((photo) => {
+        console.log(photo)
         // link
         const anchor = document.createElement("a")
         setAttributes(anchor, {
@@ -51,29 +54,20 @@ function displayPhotos() {
         // put img inside the anchor
         anchor.appendChild(img)
         imageContainer.appendChild(anchor)
+        console.log(imageContainer)
 
         img.addEventListener("load", imageLoaded)
     })
 } 
 
-// loading functionality
-// const loading = () => {
-//     loader.hidden = false
-// }
-
-// loading completed
-// const loadingComplete = () => {
-//     loader.hidden = true
-// }
+displayPhotos()
 
 // Get photos from unsplash api
 async function getPhotos() {
     try {
-        // loading()
         const respone = await fetch(apiUrl)
         photosArray = await respone.json()
         displayPhotos()
-        // loadingComplete()
     }
     catch (error) {
         // console.log(error)
@@ -88,9 +82,5 @@ window.addEventListener("scroll", () => {
         console.log("load more")
     }
 })
-
-const saveImg = () => {
-    console.log("Saving")
-}
 
 getPhotos()
